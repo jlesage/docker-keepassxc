@@ -26,7 +26,7 @@ RUN /build/build.sh "$KEEPASSXC_URL"
 RUN xx-verify /tmp/keepassxc-install/usr/bin/keepassxc
 
 # Pull base image.
-FROM jlesage/baseimage-gui:alpine-3.20-v4.11.0
+FROM jlesage/baseimage-gui:alpine-3.20-v4.11.1
 
 ARG KEEPASSXC_VERSION
 ARG DOCKER_IMAGE_VERSION
