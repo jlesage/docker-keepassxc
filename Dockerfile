@@ -11,7 +11,7 @@ ARG DOCKER_IMAGE_VERSION=
 ARG KEEPASSXC_VERSION=2.7.12
 
 # Define software download URLs.
-ARG KEEPASSXC_URL=https://github.com/keepassxreboot/keepassxc/releases/download/2.7.11/keepassxc-${KEEPASSXC_VERSION}-src.tar.xz
+ARG KEEPASSXC_URL=https://github.com/keepassxreboot/keepassxc/releases/download/${KEEPASSXC_VERSION}/keepassxc-${KEEPASSXC_VERSION}-src.tar.xz
 
 # Get Dockerfile cross-compilation helpers.
 FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
