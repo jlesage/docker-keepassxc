@@ -8,7 +8,7 @@
 ARG DOCKER_IMAGE_VERSION=
 
 # Define software versions.
-ARG KEEPASSXC_VERSION=2.7.11
+ARG KEEPASSXC_VERSION=2.7.12
 
 # Define software download URLs.
 ARG KEEPASSXC_URL=https://github.com/keepassxreboot/keepassxc/releases/download/2.7.11/keepassxc-${KEEPASSXC_VERSION}-src.tar.xz
