@@ -33,34 +33,51 @@ apk --no-cache add \
     cmake \
     make \
     pkgconf \
-    asciidoctor \
-    qtchooser \
-    qt5-qtbase-dev \
-    qt5-qttools-dev \
+    qt6-qtbase-dev \
+    qt6-qttools \
+    qt6-qttools-dev \
 
 xx-apk --no-cache --no-scripts add \
     musl-dev \
     gcc \
     g++ \
-    qt5-qtbase-dev \
-    qt5-qttools-dev \
-    qt5-qtsvg-dev \
-    qt5-qtx11extras-dev \
+    qt6-qtbase-dev \
+    qt6-qttools-dev \
+    qt6-qtsvg-dev \
     botan-dev \
     zlib-dev \
     minizip-dev \
     pcsc-lite-dev \
     libqrencode-dev \
-    argon2-dev \
+    libusb-dev \
+    keyutils-dev \
+    libxkbcommon-dev \
+    libxi-dev \
+    libxtst-dev \
 
 # Make sure tools used to generate code are the ones from the host.
-if [ "$(xx-info sysroot)" != "/" ]
-then
-    ln -sf /usr/bin/moc $(xx-info sysroot)usr/lib/qt5/bin/moc
-    ln -sf /usr/bin/uic $(xx-info sysroot)usr/lib/qt5/bin/uic
-    ln -sf /usr/bin/rcc $(xx-info sysroot)usr/lib/qt5/bin/rcc
-    ln -sf /usr/bin/qdbusxml2cpp $(xx-info sysroot)usr/lib/qt5/bin/qdbusxml2cpp
-    ln -sf /usr/bin/lrelease $(xx-info sysroot)usr/lib/qt5/bin/lrelease
+if xx-info is-cross; then
+    for bin in moc uic rcc; do
+        if [ -e "/usr/lib/qt6/libexec/$bin" ]; then
+            ln -sf "/usr/lib/qt6/libexec/$bin" "$(xx-info sysroot)usr/lib/qt6/libexec/$bin"
+        fi
+    done
+    for bin in qdbusxml2cpp qdbuscpp2xml lrelease lupdate qtpaths; do
+        if [ -e "/usr/lib/qt6/bin/$bin" ]; then
+            ln -sf "/usr/lib/qt6/bin/$bin" "$(xx-info sysroot)usr/lib/qt6/bin/$bin"
+        fi
+    done
+
+    # keyutils-dev ships /usr/lib/libkeyutils.so -> /usr/lib/libkeyutils.so.1.
+    # That absolute target is outside the cross sysroot, so find_library misses it.
+    so="$(xx-info sysroot)usr/lib/libkeyutils.so"
+    if [ -L "$so" ]; then
+        ln -sf libkeyutils.so.1 "$so"
+    fi
+
+    # libproxy.so.1 records RUNPATH /usr/lib/libproxy. The cross linker searches
+    # that host path and misses libpxbackend-1.0.so in the sysroot.
+    LDFLAGS="$LDFLAGS -Wl,-rpath-link=$(xx-info sysroot)usr/lib/libproxy"
 fi
 
 #
@@ -87,18 +104,15 @@ log "Configuring KeePassXC..."
         -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=Release \
-        -DWITH_XC_DOCS=OFF \
-        -DWITH_XC_AUTOTYPE=OFF \
-        -DWITH_XC_YUBIKEY=OFF \
-        -DWITH_XC_BROWSER=OFF \
-        -DWITH_XC_NETWORKING=ON \
-        -DWITH_XC_SSHAGENT=ON \
-        -DWITH_XC_FDOSECRETS=OFF \
-        -DWITH_XC_KEESHARE=ON \
-        -DWITH_XC_UPDATECHECK=OFF \
+        -DKPXC_FEATURE_DOCS=OFF \
+        -DKPXC_FEATURE_BROWSER=OFF \
+        -DKPXC_FEATURE_NETWORK=ON \
+        -DKPXC_FEATURE_SSHAGENT=ON \
+        -DKPXC_FEATURE_FDOSECRETS=OFF \
+        -DKPXC_FEATURE_UPDATES=OFF \
+        -DWITH_X11=ON \
         -DWITH_TESTS=OFF \
         -DWITH_GUI_TESTS=OFF \
-        -DWITH_DEV_BUILD=OFF \
         -DKEEPASSXC_BUILD_TYPE=Release \
         ..
 )

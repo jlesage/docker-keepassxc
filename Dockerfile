@@ -8,7 +8,7 @@
 ARG DOCKER_IMAGE_VERSION=
 
 # Define software versions.
-ARG KEEPASSXC_VERSION=2.7.12
+ARG KEEPASSXC_VERSION=2.8.0
 
 # Define software download URLs.
 ARG KEEPASSXC_URL=https://github.com/keepassxreboot/keepassxc/releases/download/${KEEPASSXC_VERSION}/keepassxc-${KEEPASSXC_VERSION}-src.tar.xz
@@ -36,14 +36,18 @@ WORKDIR /tmp
 
 # Install dependencies.
 RUN add-pkg \
-        qt5-qtbase-x11 \
-        qt5-qtsvg \
-        adwaita-qt \
+        qt6-qtbase-x11 \
+        qt6-qtsvg \
+        adwaita-qt6 \
         botan-libs \
         minizip \
         pcsc-lite-libs \
         libqrencode \
-        argon2-libs \
+        libusb \
+        keyutils \
+        libxkbcommon \
+        libxi \
+        libxtst \
         # A font is needed.
         font-croscore
 
