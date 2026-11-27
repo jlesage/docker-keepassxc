@@ -23,6 +23,10 @@ app:
     category: "Tools:"
   documentation:
   changelog:
+    - version: 26.11.3
+      date: 2026-11-27
+      changes:
+        - 'Updated KeePassXC to version 2.8.0.'
     - version: 26.11.2
       date: 2026-11-26
       changes:
